@@ -10,7 +10,7 @@
 
 Name:          mutter
 Version:       40.9
-Release:       1.patched%{?dist}
+Release:       10.patched%{?dist}
 Summary:       Window and compositing manager based on Clutter
 
 License:       GPLv2+
@@ -68,7 +68,44 @@ Patch14: hw-cursor-dumb-buffer.patch
 # Backport EGLStream overview fixes (#2052584)
 Patch15: eglstream-overview-fixes.patch
 
-Patch16: x11-Add-support-for-fractional-scaling-using-Randr.patch
+Patch16: 0001-clutter-Make-ClutterClickAction-independent-of-click.patch
+Patch17: add-unsafe-mode-property.patch
+
+# Backport KMS: Survive missing GAMMA_LUT property (#2083091)
+Patch18: 0001-kms-crtc-Add-function-meta_kms_crtc_has_gamma.patch
+Patch19: 0002-crtc-kms-Don-t-add-gamma-to-the-update-if-unsupporte.patch
+Patch20: 0003-kms-crtc-Determine-gamma-support-given-the-gamma-len.patch
+
+# Backport Pass dirty rects to gpu (#2080980)
+Patch21: 0001-kms-Allow-passing-framebuffer-damage-metadata.patch
+Patch22: 0002-onscreen-native-Pass-damage-rectangles-when-page-fli.patch
+
+Patch23: 0001-backends-Move-MetaKeyboardA11yFlags-to-a-public-head.patch
+
+# GBM support with NVIDIA driver
+# https://bugzilla.redhat.com/2015891
+# Backports:
+# https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/2051
+# https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/2052
+# https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/2132
+# https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/2150
+Patch24: 0001-renderer-native-Log-render-mode-per-device.patch
+Patch25: 0002-renderer-native-Try-the-gbm-renderer-before-the-EGLD.patch
+Patch26: 0003-wayland-Only-init-EGLStream-controller-if-we-didn-t-.patch
+Patch27: 0004-renderer-native-Allow-forcing-EGLStream-backend.patch
+Patch28: 0005-cursor-renderer-native-Add-a-means-to-disable-HW-cur.patch
+
+# Fix race condition causing stuck pointer grabs (#2090170)
+Patch40: 0001-events-Pass-CurrentTime-to-XIAllowEvents-when-unfree.patch
+
+# Backport night light availability property (#2057154)
+Patch41: 0001-monitor-manager-Add-NightLightSupported-property-to-.patch
+
+# Don't add common modes if panel already has (#2125032)
+Patch42: 0001-output-kms-Add-more-heuristics-to-decide-when-to-off.patch
+Patch43: 0002-output-kms-Don-t-attemp-to-add-common-modes-on-conne.patch
+
+Patch44: x11-Add-support-for-fractional-scaling-using-Randr.patch
 
 BuildRequires: chrpath
 BuildRequires: pango-devel
@@ -217,6 +254,42 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 %{_datadir}/mutter-%{mutter_api_version}/tests
 
 %changelog
+* Thu Oct 20 2022 Jonas Ådahl <jadahl@redhat.com>) - 40.9-10
+- Don't add common modes if panel already has
+  Resolves: #2125032
+
+* Tue Aug 16 2022 Jonas Ådahl <jadahl@redhat.com>) - 40.9-9
+- Backport night light availability property
+  Resolves: #2057154
+
+* Mon Jun 27 2022 Jonas Ådahl <jadahl@redhat.com>) - 40.9-8
+- Fix race condition causing stuck pointer grabs
+  Resolves: #2090170
+
+* Mon Jun 20 2022 Olivier Fourdan <ofourdan@redhat.com> - 40.9-7
+- GBM support with NVIDIA driver
+  Resolves: #2015891
+
+* Mon Jun 20 2022 Florian Müllner <fmuellner@redhat.com> - 40.9-6
+- Make moved KeyboardA11yFlags enum public
+  Related: #2047644
+
+* Mon Jun 13 2022 Jocelyn Falempe <jfalempe@redhat.com - 40.9-5
+- Backport Pass dirty rects to gpu
+  Resolves: #2080980
+
+* Mon Jun 13 2022 Jocelyn Falempe <jfalempe@redhat.com - 40.9-4
+- Backport KMS: Survive missing GAMMA_LUT property
+  Resolves: #2083091
+
+* Fri Apr 01 2022 Florian Müllner <fmuellner@redhat.com> - 40.9-3
+- Add MetaBackend:unsafe-mode property
+  Related: #2055366
+
+* Wed Mar 30 2022 Florian Müllner <fmuellner@redhat.com> - 40.9-2
+- Ignore click count for click actions
+  Resolves: #2052806
+
 * Tue Feb 22 2022 Florian Müllner <fmuellner@redhat.com> - 40.9-1
 - Update to 40.9
   Resolves: #2056414
